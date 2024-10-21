@@ -11,26 +11,55 @@ const GAME_BOARD = (function(){
         };
     };
 
+    function checkVictory(name, mark){ // Actually, we just need to make a string of it and parse it for repeating patterns of the mark
+        for(row of gameBoard){
+            let score = 0;
+            for(cell of row){
+                if(cell == mark){
+                    score++;
+                }
+            }
+            if(score == 3){
+                GAME.stopGame(name);
+                resetBoard();
+            }
+        }
+    }
+
     function resetBoard(){
         gameBoard = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']];
     };
 
-    return {tickSquare, displayBoard, resetBoard};
+    return {tickSquare, displayBoard, checkVictory};
 }())
 
 const GAME = (function(){
-    let inProgress = true;
+    let inProgress;
 
     function startGame(player1, player2){
+        inProgress = true;
+
         while(inProgress){
             GAME_BOARD.displayBoard();
             player1.makeTurn();
+            GAME_BOARD.checkVictory(player1.name, player1.mark);
             GAME_BOARD.displayBoard();
-            player2.makeTurn();
+
+            if(inProgress){
+                player2.makeTurn();
+                GAME_BOARD.checkVictory(player2.name, player2.mark);
+            };
         };
     };
-    
-    return {startGame};
+
+    function stopGame(winningPlayer){
+        inProgress = false;
+        GAME_BOARD.displayBoard();
+        alert(`${winningPlayer} has won the game!`);
+        console.log(`${winningPlayer} has won the game!`)
+    };
+
+    return {startGame, stopGame};
 }());
 
 function createPlayer(name, mark){
@@ -45,7 +74,7 @@ function createPlayer(name, mark){
         GAME_BOARD.tickSquare(x, y, mark);
     }
 
-    return {makeTurn};
+    return {makeTurn, mark, name};
 };
 
 const playerJohn = createPlayer('John', 'X');
