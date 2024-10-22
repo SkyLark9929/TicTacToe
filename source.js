@@ -14,49 +14,24 @@ const GAME_BOARD = (function(){
 
     function checkEndConditions(mark){
         let victoryCondition = [mark, mark, mark].join(''); // join array into a string, for it is not simple to check array equality
-        let strSequence;
 
         // check horizontals
         for(row of gameBoard){
-            strSequence = row.join('');
-            if(strSequence == victoryCondition){
+            if(row.join('') == victoryCondition){
                 return 'victory';
-            }
+            };
         };
 
-        // check verticals
-        for(let i = 0; i <=2; i++){
-            strSequence = [gameBoard[0][i], gameBoard[1][i], gameBoard[2][i]].join('');
-            if(strSequence == victoryCondition){
-                return 'victory';
-            }
-        }
-        
-        // // check ascending diagonal
-        // for(let i = 0; i <=2; i++){
-        //     strSequence = [gameBoard[0][i], gameBoard[1][i], gameBoard[2][i]].join('');
-        // }
-        // if(strSequence == victoryCondition){
-        //     return 'victory';
-        // }
+        // Here on we shall start working with strings
+        let strGameBoard = gameBoard[0].join('') + gameBoard[1].join('') + gameBoard[2].join('');
 
-        // // check descending diagonal
-        // for(let i = 2; i>=0; i--){
-        //     strSequence = [gameBoard[0][i], gameBoard[1][i], gameBoard[2][i]].join('');
-        // }
-        // if(strSequence == victoryCondition){
-        //     return 'victory';
-        // }
-
-        // // check draw
-        // strSequence = '';
-        // for(row of gameBoard){
-        //     strSequence = strSequence + row.join('');
-        // }
-
-        // if(!!strSequence.includes(' ')){
-        //     return 'draw';
-        // }
+        // check verticals and diagonals. This regex was not thoroughly checked, but seems to be reliable enough
+        let regexVertical = new RegExp(`${mark}.{2}${mark}.{2}${mark}`);
+        let regexDiagonal1 = new RegExp(`${mark}.{3}${mark}.{3}${mark}`);
+        let regexDiagonal2 = new RegExp(`.{2}${mark}.{1}${mark}.{1}${mark}.{2}`);
+        if(regexVertical.test(strGameBoard) || regexDiagonal1.test(strGameBoard) || regexDiagonal2.test(strGameBoard)){
+            return 'victory';
+        };
     }
 
     function resetBoard(){
@@ -73,6 +48,7 @@ const GAME = (function(){
 
     function startGame(player1, player2){
         inProgress = true;
+        turnNumber = 1;
         GAME_BOARD.resetBoard();
         GAME_BOARD.displayBoard();
 
@@ -80,10 +56,18 @@ const GAME = (function(){
             player1.makeTurn();
             checkGameFinished(player1);
 
+            if(turnNumber == 5){
+                stopGame();
+                alert("It's a draw!");
+                console.log("It's a draw!");
+            };
+
             if(inProgress){
                 player2.makeTurn();
                 checkGameFinished(player2);
             };
+
+            turnNumber++;
         };
     };
 
@@ -94,11 +78,7 @@ const GAME = (function(){
             alert(`${player.name} has won the game!`);
             console.log(`${player.name} has won the game!`);
             stopGame();
-        } else if(gameResult == 'draw'){
-            alert('DRAW');
-            console.log('DRAW');
-            stopGame();
-        };
+        }
     }
 
     function stopGame(){
