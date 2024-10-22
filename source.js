@@ -1,3 +1,4 @@
+// Game board module, which controls the board itself
 const GAME_BOARD = (function(){
     let gameBoard = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']];
     
@@ -11,7 +12,7 @@ const GAME_BOARD = (function(){
         };
     };
 
-    function checkVictory(name, mark){ // Actually, we just need to make a string of it and parse it for repeating patterns of the mark
+    function checkEndConditions(mark){ // Actually, we just need to make a string of it and parse it for repeating patterns of the mark
         for(row of gameBoard){
             let score = 0;
             for(cell of row){
@@ -20,8 +21,8 @@ const GAME_BOARD = (function(){
                 }
             }
             if(score == 3){
-                GAME.stopGame(name);
                 resetBoard();
+                return 'victory';
             }
         }
     }
@@ -30,38 +31,48 @@ const GAME_BOARD = (function(){
         gameBoard = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']];
     };
 
-    return {tickSquare, displayBoard, checkVictory};
+    return {tickSquare, displayBoard, checkEndConditions};
 }())
 
+
+// GAME module, which controls the flow of the game
 const GAME = (function(){
     let inProgress;
 
     function startGame(player1, player2){
         inProgress = true;
+        GAME_BOARD.displayBoard();
 
         while(inProgress){
-            GAME_BOARD.displayBoard();
             player1.makeTurn();
-            GAME_BOARD.checkVictory(player1.name, player1.mark);
-            GAME_BOARD.displayBoard();
+            checkGameFinished(player1);
 
             if(inProgress){
                 player2.makeTurn();
-                GAME_BOARD.checkVictory(player2.name, player2.mark);
+                checkGameFinished(player2);
             };
         };
     };
 
-    function stopGame(winningPlayer){
+    function checkGameFinished(player){
+        let gameResult = GAME_BOARD.checkEndConditions(player.mark);
+
+        if(gameResult == 'victory'){
+            alert(`${player.name} has won the game!`);
+            console.log(`${player.name} has won the game!`);
+            stopGame();
+        }
+    }
+
+    function stopGame(){
         inProgress = false;
-        GAME_BOARD.displayBoard();
-        alert(`${winningPlayer} has won the game!`);
-        console.log(`${winningPlayer} has won the game!`)
     };
 
     return {startGame, stopGame};
 }());
 
+
+// player factory, creates players which can make turns
 function createPlayer(name, mark){
     
     function makeTurn(){
@@ -72,6 +83,7 @@ function createPlayer(name, mark){
         let y = Number(coordinates[1]);
 
         GAME_BOARD.tickSquare(x, y, mark);
+        GAME_BOARD.displayBoard();
     }
 
     return {makeTurn, mark, name};
