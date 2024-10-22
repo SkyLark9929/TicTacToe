@@ -12,18 +12,51 @@ const GAME_BOARD = (function(){
         };
     };
 
-    function checkEndConditions(mark){ // Actually, we just need to make a string of it and parse it for repeating patterns of the mark
+    function checkEndConditions(mark){
+        let victoryCondition = [mark, mark, mark].join(''); // join array into a string, for it is not simple to check array equality
+        let strSequence;
+
+        // check horizontals
         for(row of gameBoard){
-            let score = 0;
-            for(cell of row){
-                if(cell == mark){
-                    score++;
-                }
+            strSequence = row.join('');
+            if(strSequence == victoryCondition){
+                return 'victory';
             }
-            if(score == 3){
+        };
+
+        // check verticals
+        for(let i = 0; i <=2; i++){
+            strSequence = [gameBoard[0][i], gameBoard[1][i], gameBoard[2][i]].join('');
+            if(strSequence == victoryCondition){
                 return 'victory';
             }
         }
+        
+        // // check ascending diagonal
+        // for(let i = 0; i <=2; i++){
+        //     strSequence = [gameBoard[0][i], gameBoard[1][i], gameBoard[2][i]].join('');
+        // }
+        // if(strSequence == victoryCondition){
+        //     return 'victory';
+        // }
+
+        // // check descending diagonal
+        // for(let i = 2; i>=0; i--){
+        //     strSequence = [gameBoard[0][i], gameBoard[1][i], gameBoard[2][i]].join('');
+        // }
+        // if(strSequence == victoryCondition){
+        //     return 'victory';
+        // }
+
+        // // check draw
+        // strSequence = '';
+        // for(row of gameBoard){
+        //     strSequence = strSequence + row.join('');
+        // }
+
+        // if(!!strSequence.includes(' ')){
+        //     return 'draw';
+        // }
     }
 
     function resetBoard(){
@@ -61,7 +94,11 @@ const GAME = (function(){
             alert(`${player.name} has won the game!`);
             console.log(`${player.name} has won the game!`);
             stopGame();
-        }
+        } else if(gameResult == 'draw'){
+            alert('DRAW');
+            console.log('DRAW');
+            stopGame();
+        };
     }
 
     function stopGame(){
