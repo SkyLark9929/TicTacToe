@@ -21,7 +21,6 @@ const GAME_BOARD = (function(){
                 }
             }
             if(score == 3){
-                resetBoard();
                 return 'victory';
             }
         }
@@ -41,6 +40,7 @@ const GAME = (function(){
 
     function startGame(player1, player2){
         inProgress = true;
+        GAME_BOARD.resetBoard();
         GAME_BOARD.displayBoard();
 
         while(inProgress){
