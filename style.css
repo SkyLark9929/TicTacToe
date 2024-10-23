@@ -1,0 +1,58 @@
+body{
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.game_board{
+    width: 100%;
+    aspect-ratio: 1/1;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr );
+}
+
+.board_cell{
+    max-height: 250px;
+    max-width: 250px;
+
+    background-color: white;
+
+    outline: 4px solid black;
+}
+
+.button-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+}
+
+button{
+    outline: 2px solid black;
+    border: 0px solid white;
+    border-radius: 10px;
+    line-height: 2rem;
+    padding: 1vh;
+    color: black;
+    background-color: white;
+    font-size: 2rem;
+}
+
+button:hover{
+    background-color: #e9e9e9;
+}
+
+button:active{
+    background-color: white;
+}
+
+.cross{
+    background-image: url('/icons/cross.svg');
+}
+
+.zero {
+    background-image: url('/icons/circle.svg');
+}
