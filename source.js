@@ -13,23 +13,10 @@ const GAME_BOARD = (function(){
     };
 
     function checkEndConditions(mark){
-        let victoryCondition = [mark, mark, mark].join(''); // join array into a string, for it is not simple to check array equality
-
-        // check horizontals
-        for(row of gameBoard){
-            if(row.join('') == victoryCondition){
-                return 'victory';
-            };
-        };
-
-        // Here on we shall start working with strings
-        let strGameBoard = gameBoard[0].join('') + gameBoard[1].join('') + gameBoard[2].join('');
-
-        // check verticals and diagonals. This regex was not thoroughly checked, but seems to be reliable enough
+        let regexHorizontal = new RegExp(`.{3}${mark}{3}.{3}|${mark}{3}.{6}|.{6}${mark}{3}`);
         let regexVertical = new RegExp(`${mark}.{2}${mark}.{2}${mark}`);
-        let regexDiagonal1 = new RegExp(`${mark}.{3}${mark}.{3}${mark}`);
-        let regexDiagonal2 = new RegExp(`.{2}${mark}.{1}${mark}.{1}${mark}.{2}`);
-        if(regexVertical.test(strGameBoard) || regexDiagonal1.test(strGameBoard) || regexDiagonal2.test(strGameBoard)){
+        let regexDiagonal = new RegExp(`${mark}.{3}${mark}.{3}${mark}|.{2}${mark}.{1}${mark}.{1}${mark}.{2}`);
+        if(regexHorizontal.test(strGameBoard) || regexVertical.test(strGameBoard) || regexDiagonal.test(strGameBoard)){
             return 'victory';
         };
     }
