@@ -1,26 +1,29 @@
 // Game board module, which controls the board itself
 const GAME_BOARD = (function(){
-    let gameBoard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+    let gameBoard = [];
+    for(let i=0; i<9; i++){
+        gameBoard.push(cell(i));
+    };
     
     function tickSquare(index, mark){
-        gameBoard[index] = mark;
+        gameBoard[index].setValue(mark, index);
     };
 
     function consoleLogBoard(){
-        console.log(gameBoard.slice(0, 3));
-        console.log(gameBoard.slice(3, 6));
-        console.log(gameBoard.slice(6));
+        console.log(gameBoard.slice(0, 3).map((obj) => obj.getValue()));
+        console.log(gameBoard.slice(3, 6).map((obj) => obj.getValue()));
+        console.log(gameBoard.slice(6).map((obj) => obj.getValue()));
     };
 
     function checkEndConditions(mark){
-        let strGameBoard = gameBoard.join('');
+        let strGameBoard = gameBoard.map((obj) => obj.getValue()).join('');
         let regexHorizontal = new RegExp(`.{3}${mark}{3}.{3}|${mark}{3}.{6}|.{6}${mark}{3}`);
         let regexVertical = new RegExp(`${mark}.{2}${mark}.{2}${mark}`);
         let regexDiagonal = new RegExp(`${mark}.{3}${mark}.{3}${mark}|.{2}${mark}.{1}${mark}.{1}${mark}.{2}`);
         if(regexHorizontal.test(strGameBoard) || regexVertical.test(strGameBoard) || regexDiagonal.test(strGameBoard)){
             return 'victory';
         };
-        if(!gameBoard.includes(' ')){
+        if(!strGameBoard.includes(' ')){
             return 'draw';
         };
     };
@@ -32,6 +35,15 @@ const GAME_BOARD = (function(){
     return {tickSquare, consoleLogBoard, checkEndConditions, resetBoard};
 }());
 
+function cell(){
+    let value = ' ';
+
+    const getValue = () => value;
+
+    const setValue = (m) => {value = m}; // mark goes up to here, but it is not saved into the board itself.
+
+    return {getValue, setValue, value};
+};
 
 // GAME module, which controls the flow of the game, its start, restart and finish
 const gameController = (function(){
