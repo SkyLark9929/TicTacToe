@@ -13,7 +13,7 @@ body{
     grid-template-rows: repeat(3, 1fr );
 }
 
-.board_cell{
+.cell{
     max-height: 250px;
     max-width: 250px;
 

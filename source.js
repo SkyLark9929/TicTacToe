@@ -1,99 +1,96 @@
 // Game board module, which controls the board itself
 const GAME_BOARD = (function(){
-    let gameBoard = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']];
+    let gameBoard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
     
-    function tickSquare(x, y, mark){
-        gameBoard[y][x] = mark;
+    function tickSquare(index, mark){
+        gameBoard[index] = mark;
     };
 
-    function displayBoard(){
-        for(let index = gameBoard.length - 1; index >= 0; index--){
-            console.log(gameBoard[index]);
-        };
+    function consoleLogBoard(){
+        console.log(gameBoard.slice(0, 3));
+        console.log(gameBoard.slice(3, 6));
+        console.log(gameBoard.slice(6));
     };
 
     function checkEndConditions(mark){
+        let strGameBoard = gameBoard.join('');
         let regexHorizontal = new RegExp(`.{3}${mark}{3}.{3}|${mark}{3}.{6}|.{6}${mark}{3}`);
         let regexVertical = new RegExp(`${mark}.{2}${mark}.{2}${mark}`);
         let regexDiagonal = new RegExp(`${mark}.{3}${mark}.{3}${mark}|.{2}${mark}.{1}${mark}.{1}${mark}.{2}`);
         if(regexHorizontal.test(strGameBoard) || regexVertical.test(strGameBoard) || regexDiagonal.test(strGameBoard)){
             return 'victory';
         };
-    }
-
-    function resetBoard(){
-        gameBoard = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']];
-    };
-
-    return {tickSquare, displayBoard, checkEndConditions, resetBoard};
-}())
-
-
-// GAME module, which controls the flow of the game
-const GAME = (function(){
-    let inProgress;
-
-    function startGame(player1, player2){
-        inProgress = true;
-        turnNumber = 1;
-        GAME_BOARD.resetBoard();
-        GAME_BOARD.displayBoard();
-
-        while(inProgress){
-            player1.makeTurn();
-            checkGameFinished(player1);
-
-            if(turnNumber == 5){
-                stopGame();
-                alert("It's a draw!");
-                console.log("It's a draw!");
-            };
-
-            if(inProgress){
-                player2.makeTurn();
-                checkGameFinished(player2);
-            };
-
-            turnNumber++;
+        if(!gameBoard.includes(' ')){
+            return 'draw';
         };
     };
 
-    function checkGameFinished(player){
-        let gameResult = GAME_BOARD.checkEndConditions(player.mark);
-
-        if(gameResult == 'victory'){
-            alert(`${player.name} has won the game!`);
-            console.log(`${player.name} has won the game!`);
-            stopGame();
-        }
-    }
-
-    function stopGame(){
-        inProgress = false;
+    function resetBoard(){
+        gameBoard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
     };
 
-    return {startGame, stopGame};
+    return {tickSquare, consoleLogBoard, checkEndConditions, resetBoard};
 }());
 
 
-// player factory, creates players which can make turns
-function createPlayer(name, mark){
-    
-    function makeTurn(){
-        console.log(`Player ${name} is making a turn`);
-        let coordinates = prompt(`${name}! Input the x;y :`);
-        coordinates = coordinates.split(';');
-        let x = Number(coordinates[0]);
-        let y = Number(coordinates[1]);
+// GAME module, which controls the flow of the game, its start, restart and finish
+const gameController = (function(){
 
-        GAME_BOARD.tickSquare(x, y, mark);
-        GAME_BOARD.displayBoard();
-    }
+    const board = GAME_BOARD;
 
-    return {makeTurn, mark, name};
-};
+    const createPlayer = (name, mark) => {
+        return {name, mark};
+    };
 
-const playerJohn = createPlayer('John', 'X');
-const playerElijah = createPlayer('Elijah', 'O');
+    const players = [createPlayer('Elijah', 'X'), 
+                     createPlayer('Josiah', 'O')];
 
-GAME.startGame(playerElijah, playerJohn);
+    let currentPlayer = players[0];
+
+    const switchPlayer = () => {
+        currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
+    };
+
+    const promptCoordinates = () => {
+        cell_number = prompt('Enter cell number 0-8 (top left to bottom right):');
+        return cell_number;
+    };
+
+    const makeTurn = () => {
+        announceTurn(currentPlayer.name);
+        board.tickSquare(promptCoordinates(), currentPlayer.mark);
+        board.consoleLogBoard();
+        checkGameFinished(currentPlayer);
+        switchPlayer();
+    };
+
+    const checkGameFinished = (player) => {
+        let gameResult = board.checkEndConditions(player.mark);
+
+        if(gameResult == 'victory'){
+            announceVictory(player);
+        } else if(gameResult == 'draw'){
+            announceDraw();
+        };
+    };
+
+    const announceTurn = (name) => {
+        console.log(`${name} is making a turn:`);
+    };
+
+    const announceVictory = (player) => {
+        alert(`${player.name} has won the game!`);
+        console.log(`${player.name} has won the game!`);
+    };
+
+    const announceDraw = () => {
+        alert(`It is a draw!`)
+        console.log('It is a draw!');
+    };
+
+    const resetGame = () => {board.resetBoard()};
+
+    return {makeTurn, resetGame};
+}());
+
+game = gameController
