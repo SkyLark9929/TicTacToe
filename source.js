@@ -125,7 +125,7 @@ function domController(){
     const restartButton = document.querySelector('.start_new_game');
     const restartConfirmBtn = document.querySelector('.newgame-yes');
     const boardContainer = document.querySelector('.game_board');
-    let inProgress = game.getGameStatus();
+
 
     const displayCells = () =>{
         let board = game.getBoard();
@@ -151,6 +151,8 @@ function domController(){
     };
 
     const clickCellEventHandler = (e) => {
+        let inProgress = game.getGameStatus();
+        
         if(e.target.dataset.marked || !inProgress){
             return;
         }
