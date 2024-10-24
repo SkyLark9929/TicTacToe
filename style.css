@@ -11,6 +11,8 @@ body{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr );
+
+    border: 2px solid black;
 }
 
 .cell{
@@ -18,8 +20,7 @@ body{
     max-width: 250px;
 
     background-color: white;
-
-    outline: 4px solid black;
+    border-radius: 0px;
 }
 
 .button-wrapper{
@@ -32,8 +33,7 @@ body{
 }
 
 button{
-    outline: 2px solid black;
-    border: 0px solid white;
+    border: 2px solid black;
     border-radius: 10px;
     line-height: 2rem;
     padding: 1vh;
@@ -43,7 +43,8 @@ button{
 }
 
 button:focus{
-    outline: 2px solid blue;
+    outline-offset: -2px;
+    outline: solid 2px blue;
 }
 
 button:hover{
