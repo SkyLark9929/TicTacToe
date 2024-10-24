@@ -1,8 +1,9 @@
 // Game board module, which controls the board itself
 const GAME_BOARD = (function(){
     let gameBoard = [];
+    let createCell = cell;
     for(let i=0; i<9; i++){
-        gameBoard.push(cell(i));
+        gameBoard.push(createCell(i));
     };
     
     function tickSquare(index, mark){
@@ -29,25 +30,32 @@ const GAME_BOARD = (function(){
     };
 
     function resetBoard(){
-        gameBoard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
+        gameBoard = [];
+        for(let i=0; i<9; i++){
+            gameBoard.push(createCell(i));
+        };
     };
 
-    return {tickSquare, consoleLogBoard, checkEndConditions, resetBoard};
+    const getBoard = () => gameBoard;
+
+    return {tickSquare, consoleLogBoard, checkEndConditions, resetBoard, getBoard};
 }());
 
-function cell(){
+function cell(i){
     let value = ' ';
+
+    const getIndex = () => i;
 
     const getValue = () => value;
 
     const setValue = (m) => {value = m}; // mark goes up to here, but it is not saved into the board itself.
 
-    return {getValue, setValue, value};
+    return {getValue, setValue, getIndex};
 };
 
 // GAME module, which controls the flow of the game, its start, restart and finish
 const gameController = (function(){
-
+    let inProgress = true;
     const board = GAME_BOARD;
 
     const createPlayer = (name, mark) => {
@@ -68,9 +76,9 @@ const gameController = (function(){
         return cell_number;
     };
 
-    const makeTurn = () => {
+    const makeTurn = (coordinate) => {
         announceTurn(currentPlayer.name);
-        board.tickSquare(promptCoordinates(), currentPlayer.mark);
+        board.tickSquare(coordinate, currentPlayer.mark);
         board.consoleLogBoard();
         checkGameFinished(currentPlayer);
         switchPlayer();
@@ -81,8 +89,10 @@ const gameController = (function(){
 
         if(gameResult == 'victory'){
             announceVictory(player);
+            inProgress = false;
         } else if(gameResult == 'draw'){
             announceDraw();
+            inProgress = false;
         };
     };
 
@@ -100,9 +110,65 @@ const gameController = (function(){
         console.log('It is a draw!');
     };
 
-    const resetGame = () => {board.resetBoard()};
+    const getGameStatus = () => inProgress;
 
-    return {makeTurn, resetGame};
+    const resetGame = () => {board.resetBoard(); inProgress = true;};
+
+    return {makeTurn, resetGame, getBoard: board.getBoard, getGameStatus};
 }());
 
-game = gameController
+
+// Dom controller module which controls the render of the game
+function domController(){
+    const game = gameController;
+    const restartButton = document.querySelector('.start_new_game');
+    const boardContainer = document.querySelector('.game_board');
+    let inProgress = game.getGameStatus();
+
+    const displayCells = () =>{
+        let board = game.getBoard();
+        let cellElement;
+
+        boardContainer.textContent = ''; //This method not only alters the text content node, but also removes all the other child nodes.
+
+        for(cell of board){
+            let cellValue = cell.getValue();
+            console.log(cellValue);
+            cellElement = document.createElement('button');
+            cellElement.dataset.index = cell.getIndex();
+            cellElement.classList.add('cell');
+            if(cellValue === 'X'){
+                cellElement.dataset.marked = true;
+                cellElement.classList.add('cross');
+            } else if(cellValue === 'O'){
+                cellElement.dataset.marked = true;
+                cellElement.classList.add('zero');
+            };
+            boardContainer.appendChild(cellElement);
+        };
+    };
+
+    const clickCellEventHandler = (e) => {
+        if(e.target.dataset.marked || !inProgress){
+            return;
+        }
+        game.makeTurn(e.target.dataset.index);
+        displayCells();
+    };
+
+    const restartGame = () => {
+        game.resetGame();
+        displayCells();
+    };
+
+    restartButton.addEventListener('click', restartGame);
+    boardContainer.addEventListener('click', clickCellEventHandler);
+
+    const restartGameModalHandler = () => {
+
+    };
+
+    displayCells();
+}
+
+domController();
