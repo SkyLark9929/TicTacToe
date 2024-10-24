@@ -66,6 +66,7 @@ const gameController = (function(){
                      createPlayer('Josiah', 'O')]; //TODO: get player names from a dialog; 
 
     let currentPlayer = players[0];
+    let announcement = `${currentPlayer.name} is making a turn:`;
 
     const switchPlayer = () => {
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
@@ -77,11 +78,13 @@ const gameController = (function(){
     };
 
     const makeTurn = (coordinate) => {
-        announceTurn(currentPlayer.name);
         board.tickSquare(coordinate, currentPlayer.mark);
         board.consoleLogBoard();
         checkGameFinished(currentPlayer);
         switchPlayer();
+        if(inProgress){
+            announceTurn(currentPlayer.name);
+        };
     };
 
     const checkGameFinished = (player) => {
@@ -97,39 +100,42 @@ const gameController = (function(){
     };
 
     const announceTurn = (name) => {
-        console.log(`${name} is making a turn:`);
+        announcement = `${name} is making a turn:`;
     };
 
     const announceVictory = (player) => {
-        alert(`${player.name} has won the game!`);
-        console.log(`${player.name} has won the game!`);
+        announcement = `${player.name} has won the game!`;
     };
 
     const announceDraw = () => {
-        alert(`It is a draw!`)
-        console.log('It is a draw!');
+        announcement = `It is a draw!`;
     };
 
     const getGameStatus = () => inProgress;
 
     const resetGame = () => {board.resetBoard(); inProgress = true;};
 
-    return {makeTurn, resetGame, getBoard: board.getBoard, getGameStatus};
+    const getAnnouncement = () => announcement;
+
+    return {makeTurn, resetGame, getBoard: board.getBoard, getGameStatus, getAnnouncement};
 }());
 
 
 // Dom controller module which controls the render of the game
 function domController(){
     const game = gameController;
+    const announceDiv = document.querySelector('.announcer');
     const restartGameModal = document.querySelector('.confirm_new_game');
     const restartButton = document.querySelector('.start_new_game');
     const restartConfirmBtn = document.querySelector('.newgame-yes');
     const boardContainer = document.querySelector('.game_board');
+    announceDiv.textContent = game.getAnnouncement();
 
 
     const displayCells = () =>{
         let board = game.getBoard();
         let cellElement;
+        announceDiv.textContent = game.getAnnouncement();
 
         boardContainer.textContent = ''; //This method not only alters the text content node, but also removes all the other child nodes.
 
@@ -152,7 +158,7 @@ function domController(){
 
     const clickCellEventHandler = (e) => {
         let inProgress = game.getGameStatus();
-        
+
         if(e.target.dataset.marked || !inProgress){
             return;
         }
