@@ -26,6 +26,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 5vh;
     padding-top: 5vh;
     padding-bottom: 5vh;
 }
@@ -59,4 +60,8 @@ button:active{
 
 .zero {
     background-image: url('/icons/circle.svg');
+}
+
+.confirm_new_game h1{
+    text-align: center;
 }

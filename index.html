@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <script src="source.js" defer></script>
-     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game_board"></div>
     <span class="button-wrapper"><button class="start_new_game">START NEW GAME</button></span>
+    <dialog class="confirm_new_game">
+        <h1>Are you sure you want to restart the game?</h1>
+        <form class="button-wrapper" method="dialog">
+            <button class="newgame-yes">YES</button>
+            <button class="newgame-no">NO</button>
+        </form>
+    </dialog>
 </body>
 </html>
