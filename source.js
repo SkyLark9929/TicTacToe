@@ -63,7 +63,7 @@ const gameController = (function(){
     };
 
     const players = [createPlayer('Elijah', 'X'), 
-                     createPlayer('Josiah', 'O')];
+                     createPlayer('Josiah', 'O')]; //TODO: get player names from a dialog; 
 
     let currentPlayer = players[0];
 
@@ -121,7 +121,9 @@ const gameController = (function(){
 // Dom controller module which controls the render of the game
 function domController(){
     const game = gameController;
+    const restartGameModal = document.querySelector('.confirm_new_game');
     const restartButton = document.querySelector('.start_new_game');
+    const restartConfirmBtn = document.querySelector('.newgame-yes');
     const boardContainer = document.querySelector('.game_board');
     let inProgress = game.getGameStatus();
 
@@ -161,12 +163,15 @@ function domController(){
         displayCells();
     };
 
-    restartButton.addEventListener('click', restartGame);
+    const restartGameModalHandler = () => {
+        restartGameModal.showModal();
+    };
+
+    restartButton.addEventListener('click', restartGameModalHandler); // main button shows the modal
+    restartConfirmBtn.addEventListener('click', restartGame); // confirm button initiates the restart
     boardContainer.addEventListener('click', clickCellEventHandler);
 
-    const restartGameModalHandler = () => {
 
-    };
 
     displayCells();
 }
