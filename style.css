@@ -9,7 +9,7 @@ body{
 }
 
 .game_board{
-    width: 100%;
+    max-width: 100%;
     aspect-ratio: 1/1;
 
     display: grid;
@@ -20,9 +20,6 @@ body{
 }
 
 .cell{
-    max-height: 250px;
-    max-width: 250px;
-
     background-color: white;
     border-radius: 0px;
 }
