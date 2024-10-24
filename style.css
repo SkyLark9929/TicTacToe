@@ -4,6 +4,10 @@ body{
     margin-right: auto;
 }
 
+.announcer{
+    text-align: center;
+}
+
 .game_board{
     width: 100%;
     aspect-ratio: 1/1;
@@ -29,7 +33,6 @@ body{
     align-items: center;
     gap: 5vh;
     padding-top: 5vh;
-    padding-bottom: 5vh;
 }
 
 button{
