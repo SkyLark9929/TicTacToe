@@ -41,6 +41,10 @@ button{
     font-size: 2rem;
 }
 
+button:focus{
+    outline: 2px solid blue;
+}
+
 button:hover{
     background-color: #e9e9e9;
 }
