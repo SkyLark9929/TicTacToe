@@ -72,7 +72,11 @@ const gameController = (function(){
         currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
     };
 
-    const promptCoordinates = () => {
+    const forcePlayer0Turn = () => {
+        currentPlayer = players[0];
+    };
+
+    const promptCoordinates = () => { // not in use anymore
         cell_number = prompt('Enter cell number 0-8 (top left to bottom right):');
         return cell_number;
     };
@@ -81,7 +85,7 @@ const gameController = (function(){
         board.tickSquare(coordinate, currentPlayer.mark);
         board.consoleLogBoard();
         checkGameFinished(currentPlayer);
-        switchPlayer();
+        switchPlayer(); // Need to change this so that players[0] is always first one to go
         if(inProgress){
             announceTurn(currentPlayer.name);
         };
@@ -113,7 +117,7 @@ const gameController = (function(){
 
     const getGameStatus = () => inProgress;
 
-    const resetGame = () => {board.resetBoard(); inProgress = true;};
+    const resetGame = () => {board.resetBoard(); inProgress = true; forcePlayer0Turn();};
 
     const getAnnouncement = () => announcement;
 
