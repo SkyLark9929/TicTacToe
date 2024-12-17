@@ -29,7 +29,14 @@ body{
     justify-content: center;
     align-items: center;
     gap: 5vh;
-    padding-top: 5vh;
+    padding-top: 5vh
+}
+
+.button-set{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5vh;
 }
 
 button{
@@ -63,6 +70,31 @@ button:active{
     background-image: url('/icons/circle.svg');
 }
 
-.confirm_new_game h1{
+.confirm_new_game legend{
+    font-size: 2rem;
     text-align: center;
+}
+
+fieldset p{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1vh;
+}
+
+input{
+    border: 2px solid black;
+    border-radius: 10px;
+    line-height: 1.5rem;
+    font-size: 1.5rem;
+}
+
+input:focus{
+    outline-offset: -2px;
+    outline: solid 2px blue;
+}
+
+label {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
 }
