@@ -121,7 +121,13 @@ const gameController = (function(){
 
     const getAnnouncement = () => announcement;
 
-    return {makeTurn, resetGame, getBoard: board.getBoard, getGameStatus, getAnnouncement};
+    const changePlayerNames = (name1, name2) => {
+        players[0].name = name1;
+        players[1].name = name2;
+        announcement = `${currentPlayer.name} is making a turn:`;
+    };
+
+    return {makeTurn, resetGame, getBoard: board.getBoard, getGameStatus, getAnnouncement, changePlayerNames};
 }());
 
 
@@ -133,8 +139,19 @@ function domController(){
     const restartButton = document.querySelector('.start_new_game');
     const restartConfirmBtn = document.querySelector('.newgame-yes');
     const boardContainer = document.querySelector('.game_board');
-    announceDiv.textContent = game.getAnnouncement();
+    const player1NameInput = document.querySelector('#player1-name');
+    const player2NameInput = document.querySelector('#player2-name');
 
+    const initializeDOM = () => {
+        announceDiv.textContent = 'Press "Start New Game"';
+        let cellMock;
+        for(let i = 0; i < 9; i++){
+            cellMock = document.createElement('button');
+            cellMock.classList.add('cell');
+            cellMock.disabled = true;
+            boardContainer.appendChild(cellMock);
+        }
+    }
 
     const displayCells = () =>{
         let board = game.getBoard();
@@ -179,13 +196,18 @@ function domController(){
         restartGameModal.showModal();
     };
 
+    const updatePlayerNames = () => {
+        let player1Name = player1NameInput.value;
+        let player2Name = player2NameInput.value;
+        gameController.changePlayerNames(player1Name, player2Name);
+    }
+
     restartButton.addEventListener('click', restartGameModalHandler); // main button shows the modal
+    restartConfirmBtn.addEventListener('click', updatePlayerNames);
     restartConfirmBtn.addEventListener('click', restartGame); // confirm button initiates the restart
     boardContainer.addEventListener('click', clickCellEventHandler);
 
-
-
-    displayCells();
+    initializeDOM();
 }
 
 domController();
