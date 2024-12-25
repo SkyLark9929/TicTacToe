@@ -63,11 +63,11 @@ button:active{
 }
 
 .cross{
-    background-image: url('/icons/cross.svg');
+    background-image: url('/TicTacToe/icons/cross.svg');
 }
 
 .zero {
-    background-image: url('/icons/circle.svg');
+    background-image: url('/TicTacToe/icons/circle.svg');
 }
 
 .confirm_new_game legend{
